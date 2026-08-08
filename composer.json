@@ -9,7 +9,11 @@
         "log-viewer",
         "log-management"
     ],
-    "homepage": "https://github.com/UFA-Tech/filament-log-management",
+    "homepage": "https://github.com/alfism1/filament-log-management",
+    "support": {
+        "issues": "https://github.com/alfism1/filament-log-management/issues",
+        "source": "https://github.com/alfism1/filament-log-management"
+    },
     "license": "MIT",
     "authors": [
         {
