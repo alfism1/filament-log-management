@@ -1,0 +1,63 @@
+{
+    "name": "alfism1/filament-log-management",
+    "description": "A Filament 3 log viewer that filters Laravel log entries by the process that produced them — cron, queue, booking, live chat, and anything else you configure.",
+    "keywords": [
+        "laravel",
+        "filament",
+        "filament-plugin",
+        "logs",
+        "log-viewer",
+        "log-management"
+    ],
+    "homepage": "https://github.com/UFA-Tech/filament-log-management",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Alfi Samudro Mulyo",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": "^8.2",
+        "filament/filament": "^3.2",
+        "illuminate/contracts": "^11.0|^12.0",
+        "illuminate/support": "^11.0|^12.0",
+        "spatie/laravel-package-tools": "^1.16"
+    },
+    "require-dev": {
+        "orchestra/testbench": "^9.0|^10.0",
+        "pestphp/pest": "^2.0|^3.0",
+        "pestphp/pest-plugin-laravel": "^2.0|^3.0",
+        "laravel/pint": "^1.13"
+    },
+    "autoload": {
+        "psr-4": {
+            "Alfism1\\FilamentLogManagement\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Alfism1\\FilamentLogManagement\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "test": "vendor/bin/pest",
+        "format": "vendor/bin/pint"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Alfism1\\FilamentLogManagement\\FilamentLogManagementServiceProvider"
+            ]
+        }
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true,
+            "php-http/discovery": true
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}
