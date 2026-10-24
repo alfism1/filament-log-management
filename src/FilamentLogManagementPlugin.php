@@ -3,11 +3,13 @@
 namespace Alfism1\FilamentLogManagement;
 
 use Alfism1\FilamentLogManagement\Pages\LogViewer;
+use BackedEnum;
 use Closure;
 use Filament\Contracts\Plugin;
 use Filament\Panel;
 use Filament\Support\Concerns\EvaluatesClosures;
 use Throwable;
+use UnitEnum;
 
 /**
  * Registers the log viewer on a Filament panel.
@@ -29,11 +31,11 @@ class FilamentLogManagementPlugin implements Plugin
 
     public const ID = 'filament-log-management';
 
-    protected string | Closure | null $navigationGroup = null;
+    protected string | UnitEnum | Closure | null $navigationGroup = null;
 
     protected int | Closure | null $navigationSort = null;
 
-    protected string | Closure | null $navigationIcon = null;
+    protected string | BackedEnum | Closure | null $navigationIcon = null;
 
     protected string | Closure | null $navigationLabel = null;
 
@@ -91,7 +93,7 @@ class FilamentLogManagementPlugin implements Plugin
     |--------------------------------------------------------------------------
     */
 
-    public function navigationGroup(string | Closure | null $group): static
+    public function navigationGroup(string | UnitEnum | Closure | null $group): static
     {
         $this->navigationGroup = $group;
 
@@ -105,7 +107,7 @@ class FilamentLogManagementPlugin implements Plugin
         return $this;
     }
 
-    public function navigationIcon(string | Closure | null $icon): static
+    public function navigationIcon(string | BackedEnum | Closure | null $icon): static
     {
         $this->navigationIcon = $icon;
 
@@ -162,7 +164,7 @@ class FilamentLogManagementPlugin implements Plugin
     |--------------------------------------------------------------------------
     */
 
-    public function getNavigationGroup(): ?string
+    public function getNavigationGroup(): string | UnitEnum | null
     {
         return $this->evaluate($this->navigationGroup) ?? config('log-management.navigation.group');
     }
@@ -174,7 +176,7 @@ class FilamentLogManagementPlugin implements Plugin
         return $sort === null ? null : (int) $sort;
     }
 
-    public function getNavigationIcon(): ?string
+    public function getNavigationIcon(): string | BackedEnum | null
     {
         return $this->evaluate($this->navigationIcon)
             ?? config('log-management.navigation.icon', 'heroicon-o-document-magnifying-glass');

@@ -5,10 +5,11 @@
     $activeProcesses = collect($scan->processCounts)->take(8);
 @endphp
 
+{{-- Styles live in resources/dist/filament-log-management.css, not Tailwind utilities. --}}
 <x-filament-panels::page>
     <div
         @if ($autoRefresh) wire:poll.{{ $this->pollInterval() }} @endif
-        class="space-y-6"
+        class="flm-page"
     >
         {{-- Filters --}}
         <form wire:submit.prevent>
@@ -16,59 +17,56 @@
         </form>
 
         {{-- Summary --}}
-        <div class="grid grid-cols-2 gap-4 lg:grid-cols-4">
+        <div class="flm-summary">
             <x-filament::section compact>
-                <div class="text-sm text-gray-500 dark:text-gray-400">
+                <div class="flm-stat-label">
                     {{ $this->trans('summary.entries') }}
                 </div>
-                <div class="mt-1 text-2xl font-semibold tabular-nums text-gray-950 dark:text-white">
+                <div class="flm-stat-value">
                     {{ number_format($scan->total()) }}
                 </div>
-                <div class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                <div class="flm-stat-hint">
                     {{ $this->trans('summary.entries_hint', ['count' => number_format($scan->scannedEntries)]) }}
                 </div>
             </x-filament::section>
 
             <x-filament::section compact>
-                <div class="text-sm text-gray-500 dark:text-gray-400">
+                <div class="flm-stat-label">
                     {{ $this->trans('summary.problems') }}
                 </div>
                 <div @class([
-                    'mt-1 text-2xl font-semibold tabular-nums',
-                    'text-danger-600 dark:text-danger-400' => $scan->problemCount() > 0,
-                    'text-gray-950 dark:text-white' => $scan->problemCount() === 0,
+                    'flm-stat-value',
+                    'flm-stat-value-danger' => $scan->problemCount() > 0,
                 ])>
                     {{ number_format($scan->problemCount()) }}
                 </div>
-                <button
-                    type="button"
-                    wire:click="showProblemsOnly"
-                    class="mt-1 text-xs font-medium text-primary-600 hover:underline dark:text-primary-400"
-                >
-                    {{ $this->trans('summary.problems_action') }}
-                </button>
+                <div class="flm-stat-hint">
+                    <x-filament::link tag="button" size="xs" wire:click="showProblemsOnly">
+                        {{ $this->trans('summary.problems_action') }}
+                    </x-filament::link>
+                </div>
             </x-filament::section>
 
             <x-filament::section compact>
-                <div class="text-sm text-gray-500 dark:text-gray-400">
+                <div class="flm-stat-label">
                     {{ $this->trans('summary.warnings') }}
                 </div>
-                <div class="mt-1 text-2xl font-semibold tabular-nums text-gray-950 dark:text-white">
+                <div class="flm-stat-value">
                     {{ number_format($scan->levelCounts['warning'] ?? 0) }}
                 </div>
-                <div class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                <div class="flm-stat-hint">
                     {{ $this->trans('summary.warnings_hint') }}
                 </div>
             </x-filament::section>
 
             <x-filament::section compact>
-                <div class="text-sm text-gray-500 dark:text-gray-400">
+                <div class="flm-stat-label">
                     {{ $this->trans('summary.file') }}
                 </div>
-                <div class="mt-1 truncate font-mono text-sm font-semibold text-gray-950 dark:text-white" title="{{ $file?->name }}">
+                <div class="flm-stat-value flm-stat-file" title="{{ $file?->name }}">
                     {{ $file?->name ?? '—' }}
                 </div>
-                <div class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                <div class="flm-stat-hint">
                     @if ($file)
                         {{ $this->trans('summary.file_hint', [
                             'size' => $file->humanSize(),
@@ -83,35 +81,31 @@
 
         {{-- Process shortcuts --}}
         @if ($activeProcesses->isNotEmpty())
-            <div class="flex flex-wrap items-center gap-2">
-                <span class="text-sm font-medium text-gray-500 dark:text-gray-400">
+            <div class="flm-processes">
+                <span class="flm-processes-label">
                     {{ $this->trans('processes_label') }}
                 </span>
 
                 @foreach ($activeProcesses as $processKey => $count)
                     @php $process = $this->process($processKey); @endphp
 
-                    <button type="button" wire:click="filterProcess('{{ $processKey }}')">
+                    <button type="button" class="flm-process-button" wire:click="filterProcess('{{ $processKey }}')">
                         <x-filament::badge :color="$process->color" :icon="$process->icon">
                             {{ $process->label }} ({{ number_format($count) }})
                         </x-filament::badge>
                     </button>
                 @endforeach
 
-                <button
-                    type="button"
-                    wire:click="resetFilters"
-                    class="text-xs font-medium text-primary-600 hover:underline dark:text-primary-400"
-                >
+                <x-filament::link tag="button" size="xs" wire:click="resetFilters">
                     {{ $this->trans('reset_filters') }}
-                </button>
+                </x-filament::link>
             </div>
         @endif
 
         {{-- Scan notice --}}
         @if ($scan->truncated)
-            <div class="flex items-start gap-2 rounded-lg bg-warning-50 p-3 text-sm text-warning-700 ring-1 ring-warning-600/20 dark:bg-warning-400/10 dark:text-warning-400 dark:ring-warning-400/30">
-                <x-filament::icon icon="heroicon-m-information-circle" class="mt-0.5 h-5 w-5 shrink-0" />
+            <div class="flm-notice">
+                <x-filament::icon icon="heroicon-m-information-circle" class="flm-notice-icon" />
                 <span>
                     {!! $this->trans('truncated', [
                         'count' => number_format($scan->scannedEntries),
@@ -127,29 +121,28 @@
 
             <x-slot name="description">{{ $this->trans('entries.description') }}</x-slot>
 
-            <div class="-mx-4 divide-y divide-gray-200 sm:-mx-6 dark:divide-white/10">
+            <div class="flm-entries">
                 @forelse ($entries as $entry)
                     @php
                         $process = $this->process($entry->processKey);
                         $isExpanded = $expandedEntry === $entry->id;
                     @endphp
 
-                    <div wire:key="log-entry-{{ $entry->id }}">
-                        <button
-                            type="button"
-                            wire:click="toggleEntry('{{ $entry->id }}')"
-                            @class([
-                                'flex w-full items-start gap-3 px-4 py-3 text-left transition hover:bg-gray-50 sm:px-6 dark:hover:bg-white/5',
-                                'bg-gray-50 dark:bg-white/5' => $isExpanded,
-                            ])
-                        >
+                    <div
+                        wire:key="log-entry-{{ $entry->id }}"
+                        @class([
+                            'flm-entry',
+                            'flm-entry-expanded' => $isExpanded,
+                        ])
+                    >
+                        <button type="button" wire:click="toggleEntry('{{ $entry->id }}')" class="flm-entry-row">
                             <x-filament::icon
                                 :icon="$isExpanded ? 'heroicon-m-chevron-down' : 'heroicon-m-chevron-right'"
-                                class="mt-0.5 h-4 w-4 shrink-0 text-gray-400"
+                                class="flm-entry-chevron"
                             />
 
-                            <div class="min-w-0 flex-1 space-y-1">
-                                <div class="flex flex-wrap items-center gap-2">
+                            <div class="flm-entry-main">
+                                <div class="flm-entry-meta">
                                     <x-filament::badge :color="$entry->color()" :icon="$entry->icon()" size="xs">
                                         {{ strtoupper($entry->level) }}
                                     </x-filament::badge>
@@ -158,19 +151,18 @@
                                         {{ $process->label }}
                                     </x-filament::badge>
 
-                                    <span class="font-mono text-xs text-gray-500 dark:text-gray-400">
+                                    <span class="flm-entry-time">
                                         {{ $entry->time() }}
                                     </span>
 
-                                    <span class="text-xs text-gray-400 dark:text-gray-500">
+                                    <span class="flm-entry-env">
                                         {{ $entry->environment }}
                                     </span>
                                 </div>
 
                                 <p @class([
-                                    'break-words text-sm',
-                                    'font-medium text-danger-600 dark:text-danger-400' => $entry->isProblem(),
-                                    'text-gray-700 dark:text-gray-300' => ! $entry->isProblem(),
+                                    'flm-entry-message',
+                                    'flm-entry-message-problem' => $entry->isProblem(),
                                 ])>
                                     {{ $isExpanded ? $entry->message : $entry->shortMessage() }}
                                 </p>
@@ -178,22 +170,22 @@
                         </button>
 
                         @if ($isExpanded)
-                            <div class="space-y-3 bg-gray-50 px-4 pb-4 sm:px-6 dark:bg-white/5">
+                            <div class="flm-entry-details">
                                 @if ($entry->prettyContext())
                                     <div>
-                                        <div class="mb-1 text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
+                                        <div class="flm-entry-details-label">
                                             {{ $this->trans('entry.context') }}
                                         </div>
-                                        <pre class="max-h-80 overflow-auto rounded-lg bg-gray-950 p-3 text-xs leading-relaxed text-gray-100">{{ $entry->prettyContext() }}</pre>
+                                        <pre class="flm-code">{{ $entry->prettyContext() }}</pre>
                                     </div>
                                 @endif
 
                                 @if ($entry->stackTrace)
                                     <div>
-                                        <div class="mb-1 text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
+                                        <div class="flm-entry-details-label">
                                             {{ $this->trans('entry.stack_trace') }}
                                         </div>
-                                        <pre class="max-h-96 overflow-auto rounded-lg bg-gray-950 p-3 text-xs leading-relaxed text-gray-100">{{ $entry->stackTrace }}</pre>
+                                        <pre class="flm-code flm-code-tall">{{ $entry->stackTrace }}</pre>
                                     </div>
                                 @endif
 
@@ -207,9 +199,9 @@
                                             })
                                         },
                                     }"
-                                    class="flex items-center gap-3"
+                                    class="flm-entry-actions"
                                 >
-                                    <div x-ref="payload" class="hidden">{{ $entry->time() }} {{ strtoupper($entry->level) }}: {{ $entry->message }}
+                                    <div x-ref="payload" hidden>{{ $entry->time() }} {{ strtoupper($entry->level) }}: {{ $entry->message }}
 {{ $entry->context }}
 {{ $entry->stackTrace }}</div>
 
@@ -218,7 +210,7 @@
                                     </x-filament::button>
 
                                     @if ($entry->tag)
-                                        <span class="text-xs text-gray-500 dark:text-gray-400">
+                                        <span class="flm-entry-tag">
                                             {{ $this->trans('entry.tag') }}: <code>[{{ $entry->tag }}]</code>
                                         </span>
                                     @endif
@@ -227,15 +219,12 @@
                         @endif
                     </div>
                 @empty
-                    <div class="px-4 py-12 text-center sm:px-6">
-                        <x-filament::icon
-                            icon="heroicon-o-document-magnifying-glass"
-                            class="mx-auto h-10 w-10 text-gray-400 dark:text-gray-500"
-                        />
-                        <p class="mt-2 text-sm font-medium text-gray-700 dark:text-gray-300">
+                    <div class="flm-empty">
+                        <x-filament::icon icon="heroicon-o-document-magnifying-glass" class="flm-empty-icon" />
+                        <p class="flm-empty-heading">
                             {{ $this->trans('empty.heading') }}
                         </p>
-                        <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                        <p class="flm-empty-description">
                             @if ($file)
                                 {{ $this->trans('empty.description') }}
                             @else

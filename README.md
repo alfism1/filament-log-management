@@ -1,6 +1,6 @@
 # Filament Log Management
 
-A Filament 3 log viewer that filters Laravel log entries by **the process that produced them** —
+A Filament 4 log viewer that filters Laravel log entries by **the process that produced them** —
 cron, queue, mail, database, and whatever domain processes you configure — on top of the usual
 level / text / date filters.
 
@@ -19,13 +19,28 @@ level / text / date filters.
 | --- | --- |
 | PHP | 8.2+ |
 | Laravel | 11 / 12 |
-| Filament | 3.2+ |
+| Filament | 4.x |
+
+| Package | Filament | Branch |
+| --- | --- | --- |
+| 2.x | 4.x | [`4.x`](https://github.com/alfism1/filament-log-management/tree/4.x) |
+| 1.x | 3.x | [`main`](https://github.com/alfism1/filament-log-management/tree/main) |
 
 ## Installation
 
 ```bash
-composer require alfism1/filament-log-management
+composer require alfism1/filament-log-management:^2.0
 ```
+
+The page ships its own stylesheet, because Filament 4 compiles its theme without scanning plugin
+views. Publish it with:
+
+```bash
+php artisan filament:assets
+```
+
+Panels set up with `filament:install` already run this on every `composer update`, through the
+`@php artisan filament:upgrade` script in `composer.json`.
 
 Register the plugin on the panel:
 
@@ -56,10 +71,12 @@ Views and translations are publishable too, with `--tag=filament-log-management-
 Everything is optional; anything left unset falls back to the config file.
 
 ```php
+use Filament\Support\Icons\Heroicon;
+
 FilamentLogManagementPlugin::make()
     ->navigationGroup('Developer')
     ->navigationSort(4)
-    ->navigationIcon('heroicon-o-document-magnifying-glass')
+    ->navigationIcon(Heroicon::OutlinedDocumentMagnifyingGlass)   // or 'heroicon-o-...'
     ->navigationLabel('Log Management')
     ->slug('logs')
     ->registerNavigation(fn () => app()->environment('local', 'staging'))

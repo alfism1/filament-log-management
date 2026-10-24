@@ -1,7 +1,10 @@
 <?php
 
 use Alfism1\FilamentLogManagement\FilamentLogManagementPlugin;
+use Alfism1\FilamentLogManagement\FilamentLogManagementServiceProvider;
 use Alfism1\FilamentLogManagement\Pages\LogViewer;
+use Filament\Support\Facades\FilamentAsset;
+use Filament\Support\Icons\Heroicon;
 use Livewire\Livewire;
 
 beforeEach(function () {
@@ -105,6 +108,14 @@ it('toggles auto refresh', function () {
         ->assertSet('autoRefresh', true);
 });
 
+it('registers its stylesheet with Filament', function () {
+    $styles = FilamentAsset::getStyles([FilamentLogManagementServiceProvider::PACKAGE]);
+
+    expect($styles)->toHaveCount(1)
+        ->and(file_exists($styles[0]->getPath()))->toBeTrue()
+        ->and($styles[0]->getHref())->toContain('css/alfism1/filament-log-management/filament-log-management.css');
+});
+
 /*
 |--------------------------------------------------------------------------
 | Plugin API
@@ -134,6 +145,12 @@ it('lets the plugin override the config', function () {
     expect(LogViewer::getNavigationGroup())->toBe('Developer')
         ->and(LogViewer::getNavigationSort())->toBe(2)
         ->and(LogViewer::getNavigationLabel())->toBe('Server Logs');
+});
+
+it('accepts a Heroicon enum as the navigation icon', function () {
+    FilamentLogManagementPlugin::get()->navigationIcon(Heroicon::OutlinedBugAnt);
+
+    expect(LogViewer::getNavigationIcon())->toBe(Heroicon::OutlinedBugAnt);
 });
 
 it('is authorized by default', function () {

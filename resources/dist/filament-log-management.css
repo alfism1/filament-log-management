@@ -1,0 +1,321 @@
+/*
+ * Filament Log Management
+ *
+ * Filament 4 compiles its theme without scanning plugin views, so the log
+ * viewer cannot lean on Tailwind utilities. These rules use the panel's colour
+ * variables instead, so custom panel colours and dark mode still apply.
+ */
+
+.flm-page {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+/* Summary */
+
+.flm-summary {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+}
+
+@media (min-width: 64rem) {
+    .flm-summary {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+}
+
+.flm-stat-label {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    color: var(--gray-500);
+}
+
+.flm-stat-value {
+    margin-top: 0.25rem;
+    font-size: 1.5rem;
+    line-height: 2rem;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    color: var(--gray-950);
+}
+
+.flm-stat-value-danger {
+    color: var(--danger-600);
+}
+
+.flm-stat-file {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace);
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+}
+
+.flm-stat-hint {
+    margin-top: 0.25rem;
+    font-size: 0.75rem;
+    line-height: 1rem;
+    color: var(--gray-500);
+}
+
+.dark .flm-stat-label,
+.dark .flm-stat-hint {
+    color: var(--gray-400);
+}
+
+.dark .flm-stat-value {
+    color: #fff;
+}
+
+.dark .flm-stat-value-danger {
+    color: var(--danger-400);
+}
+
+/* Process shortcuts */
+
+.flm-processes {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.flm-processes-label {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    font-weight: 500;
+    color: var(--gray-500);
+}
+
+.dark .flm-processes-label {
+    color: var(--gray-400);
+}
+
+.flm-process-button {
+    cursor: pointer;
+}
+
+/* Scan notice */
+
+.flm-notice {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    border-radius: 0.5rem;
+    padding: 0.75rem;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    background-color: var(--warning-50);
+    color: var(--warning-700);
+    box-shadow: 0 0 0 1px color-mix(in oklab, var(--warning-600) 20%, transparent);
+}
+
+.dark .flm-notice {
+    background-color: color-mix(in oklab, var(--warning-400) 10%, transparent);
+    color: var(--warning-400);
+    box-shadow: 0 0 0 1px color-mix(in oklab, var(--warning-400) 30%, transparent);
+}
+
+.flm-notice-icon {
+    flex-shrink: 0;
+    margin-top: 0.125rem;
+}
+
+/* Entries — the list runs edge to edge inside the compact section's 1rem padding */
+
+.flm-entries {
+    margin-inline: -1rem;
+}
+
+.flm-entry + .flm-entry {
+    border-top: 1px solid var(--gray-200);
+}
+
+.dark .flm-entry + .flm-entry {
+    border-top-color: color-mix(in oklab, #fff 10%, transparent);
+}
+
+.flm-entry-row {
+    display: flex;
+    width: 100%;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    text-align: start;
+    cursor: pointer;
+    transition: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.flm-entry-row:hover,
+.flm-entry-expanded .flm-entry-row,
+.flm-entry-details {
+    background-color: var(--gray-50);
+}
+
+.dark .flm-entry-row:hover,
+.dark .flm-entry-expanded .flm-entry-row,
+.dark .flm-entry-details {
+    background-color: color-mix(in oklab, #fff 5%, transparent);
+}
+
+.flm-entry-chevron {
+    flex-shrink: 0;
+    width: 1rem;
+    height: 1rem;
+    margin-top: 0.125rem;
+    color: var(--gray-400);
+}
+
+.flm-entry-main {
+    display: flex;
+    flex: 1 1 0%;
+    flex-direction: column;
+    gap: 0.25rem;
+    min-width: 0;
+}
+
+.flm-entry-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.flm-entry-time,
+.flm-entry-env,
+.flm-entry-tag {
+    font-size: 0.75rem;
+    line-height: 1rem;
+}
+
+.flm-entry-time {
+    font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace);
+    color: var(--gray-500);
+}
+
+.flm-entry-env {
+    color: var(--gray-400);
+}
+
+.flm-entry-message {
+    overflow-wrap: break-word;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    color: var(--gray-700);
+}
+
+.flm-entry-message-problem {
+    font-weight: 500;
+    color: var(--danger-600);
+}
+
+.dark .flm-entry-time {
+    color: var(--gray-400);
+}
+
+.dark .flm-entry-env {
+    color: var(--gray-500);
+}
+
+.dark .flm-entry-message {
+    color: var(--gray-300);
+}
+
+.dark .flm-entry-message-problem {
+    color: var(--danger-400);
+}
+
+.flm-entry-details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 0 1rem 1rem;
+}
+
+.flm-entry-details-label {
+    margin-bottom: 0.25rem;
+    font-size: 0.75rem;
+    line-height: 1rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+    color: var(--gray-500);
+}
+
+.dark .flm-entry-details-label {
+    color: var(--gray-400);
+}
+
+.flm-code {
+    max-height: 20rem;
+    overflow: auto;
+    border-radius: 0.5rem;
+    padding: 0.75rem;
+    font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace);
+    font-size: 0.75rem;
+    line-height: 1.625;
+    background-color: var(--gray-950);
+    color: var(--gray-100);
+}
+
+.flm-code-tall {
+    max-height: 24rem;
+}
+
+.flm-entry-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.flm-entry-tag {
+    color: var(--gray-500);
+}
+
+.dark .flm-entry-tag {
+    color: var(--gray-400);
+}
+
+/* Empty state */
+
+.flm-empty {
+    padding: 3rem 1rem;
+    text-align: center;
+}
+
+.flm-empty-icon {
+    width: 2.5rem;
+    height: 2.5rem;
+    margin-inline: auto;
+    color: var(--gray-400);
+}
+
+.flm-empty-heading {
+    margin-top: 0.5rem;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    font-weight: 500;
+    color: var(--gray-700);
+}
+
+.flm-empty-description {
+    margin-top: 0.25rem;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    color: var(--gray-500);
+}
+
+.dark .flm-empty-icon {
+    color: var(--gray-500);
+}
+
+.dark .flm-empty-heading {
+    color: var(--gray-300);
+}
+
+.dark .flm-empty-description {
+    color: var(--gray-400);
+}

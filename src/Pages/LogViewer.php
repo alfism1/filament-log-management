@@ -11,23 +11,24 @@ use Alfism1\FilamentLogManagement\Support\LogFileRegistry;
 use Alfism1\FilamentLogManagement\Support\LogLevel;
 use Alfism1\FilamentLogManagement\Support\LogProcessResolver;
 use Alfism1\FilamentLogManagement\Support\LogReader;
+use BackedEnum;
 use Filament\Actions\Action;
 use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\Grid;
-use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Concerns\InteractsWithForms;
-use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
+use Filament\Panel;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Schema;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Support\Facades\Response;
 use Livewire\Attributes\Computed;
 use Livewire\WithPagination;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use UnitEnum;
 
 /**
  * Browses the files Laravel writes into storage/logs, grouping every entry into
@@ -36,12 +37,11 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
  *
  * Classification rules live in config/log-management.php.
  */
-class LogViewer extends Page implements HasForms
+class LogViewer extends Page
 {
-    use InteractsWithForms;
     use WithPagination;
 
-    protected static string $view = 'filament-log-management::pages.log-viewer';
+    protected string $view = 'filament-log-management::pages.log-viewer';
 
     /** @var array<string, mixed>|null */
     public ?array $data = [];
@@ -61,7 +61,7 @@ class LogViewer extends Page implements HasForms
         return FilamentLogManagementPlugin::get();
     }
 
-    public static function getNavigationGroup(): ?string
+    public static function getNavigationGroup(): string | UnitEnum | null
     {
         return static::plugin()->getNavigationGroup();
     }
@@ -71,7 +71,7 @@ class LogViewer extends Page implements HasForms
         return static::plugin()->getNavigationSort();
     }
 
-    public static function getNavigationIcon(): string | Htmlable | null
+    public static function getNavigationIcon(): string | BackedEnum | Htmlable | null
     {
         return static::plugin()->getNavigationIcon();
     }
@@ -81,7 +81,7 @@ class LogViewer extends Page implements HasForms
         return static::plugin()->getNavigationLabel();
     }
 
-    public static function getSlug(): string
+    public static function getSlug(?Panel $panel = null): string
     {
         return static::plugin()->getSlug();
     }
@@ -120,12 +120,13 @@ class LogViewer extends Page implements HasForms
     |--------------------------------------------------------------------------
     */
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
+        return $schema
+            ->components([
                 Section::make()
                     ->compact()
+                    ->columnSpanFull()
                     ->schema([
                         Grid::make(['default' => 1, 'sm' => 2, 'xl' => 4])
                             ->schema([
