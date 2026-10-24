@@ -21,6 +21,15 @@ level / text / date filters.
 | Laravel | 11 / 12 |
 | Filament | 3.2+ |
 
+On Filament 4? Use the 2.x release, developed on the
+[`4.x`](https://github.com/alfism1/filament-log-management/tree/4.x) branch. Composer picks the
+right one for your Filament version.
+
+| Package | Filament | Branch |
+| --- | --- | --- |
+| 2.x | 4.x | [`4.x`](https://github.com/alfism1/filament-log-management/tree/4.x) |
+| 1.x | 3.x | [`main`](https://github.com/alfism1/filament-log-management/tree/main) |
+
 ## Installation
 
 ```bash
