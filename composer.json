@@ -1,6 +1,6 @@
 {
     "name": "alfism1/filament-log-management",
-    "description": "A Filament 3 log viewer that filters Laravel log entries by the process that produced them — cron, queue, booking, live chat, and anything else you configure.",
+    "description": "A Filament log viewer (1.x for Filament 3, 2.x for Filament 4) that filters Laravel log entries by the process that produced them — cron, queue, booking, live chat, and anything else you configure.",
     "keywords": [
         "laravel",
         "filament",
